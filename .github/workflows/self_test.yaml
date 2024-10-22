@@ -1,0 +1,33 @@
+name: Integration Test
+on: [push, pull_request]
+jobs:
+  self-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Main to compare
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+          path: 'main'
+
+      - uses: actions/checkout@v4
+        with:
+          path: 'branch'
+
+      - name: Self test
+        if: ${{ github.ref != 'refs/heads/main' }}
+        id: selftest
+        uses: khalford/check-version-action@main
+        with:
+          app_version_path: "version.txt"
+          docker_compose_path: "docker-compose.yml"
+
+      - name: Log Success
+        if: ${{ env.app_updated == 'true' }}
+        run: |
+          echo "App version has been updated correctly!"
+
+      - name: Log Success
+        if: ${{ env.compose_updated == 'true' }}
+        run: |
+          echo "Compose version has been updated correctly!"

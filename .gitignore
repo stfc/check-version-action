@@ -1,0 +1,5 @@
+.idea
+main_version
+branch_version
+src/__pycache__/*
+tests/__pycache__/*

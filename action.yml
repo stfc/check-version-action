@@ -1,0 +1,19 @@
+name: 'Check Semver Version Number'
+description: 'Check if the semver version number has changed from the main branch. Can also check if the docker compose file reflects the application version.'
+inputs:
+  app_version_path:
+    description: 'Path to main app version file.'
+    required: true
+    default: './version.txt'
+  docker_compose_path:
+    description: 'Path to compose file.'
+    required: false
+outputs:
+  app_updated:
+    description: 'If the app version was updated or not.'
+  compose_updated:
+    description: 'If the compose version was updated or not.'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
