@@ -1,0 +1,3 @@
+services:
+  self-test:
+    image: some/test:1.0.0
