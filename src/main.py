@@ -19,7 +19,7 @@ def main():
         release_version = release_file.read().strip("\n")
 
     labels = os.environ.get("INPUT_LABELS")
-    if not any(label in labels for label in ["documentation", "workflow"]):
+    if any(label in labels for label in ["documentation", "workflow"]):
         return
     
     CompareAppVersion().run(main_path / app_path, branch_path / app_path)
