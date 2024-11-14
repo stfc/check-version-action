@@ -10,7 +10,7 @@ inputs:
     required: false
   labels:
     description: 'Labels added to pull requests.'
-    required: True
+    required: False
 outputs:
   app_updated:
     description: 'If the app version was updated or not.'
