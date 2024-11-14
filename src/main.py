@@ -5,7 +5,7 @@ from pathlib import Path
 from comparison import CompareAppVersion, CompareComposeVersion
 
 
-def main():
+def main() -> bool:
     """
     The entry point function for the action.
     Here we get environment variables then set environment variables when finished.
@@ -17,6 +17,10 @@ def main():
     branch_path = root_path / "branch"
     with open(branch_path / app_path, "r", encoding="utf-8") as release_file:
         release_version = release_file.read().strip("\n")
+
+    labels = os.environ.get("INPUT_LABELS")
+    if any(label in labels for label in ["documentation", "workflow"]):
+        return False
 
     CompareAppVersion().run(main_path / app_path, branch_path / app_path)
     if compose_path:
@@ -30,6 +34,7 @@ def main():
         if compose_path:
             env.write("compose_updated=true")
         env.write(f"release_tag={release_version}")
+    return True
 
 
 if __name__ == "__main__":

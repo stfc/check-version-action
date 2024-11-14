@@ -17,10 +17,11 @@ jobs:
       - name: Self test
         if: ${{ github.ref != 'refs/heads/main' }}
         id: selftest
-        uses: khalford/check-version-action@main
+        uses: stfc/check-version-action@main
         with:
           app_version_path: "version.txt"
           docker_compose_path: "docker-compose.yml"
+          labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
 
       - name: Log Success
         if: ${{ env.app_updated == 'true' }}
