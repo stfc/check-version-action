@@ -23,6 +23,8 @@ Read here for details: [Link to GitHub docs](https://docs.github.com/en/actions/
 The release tag is extracted and stored in `$GITHUB_ENV`,
 you can access this in your workflow with `$ {{ env.release_tag }}` 
 
+If you are making a change which should not affect the version such as README or CI changes. You can label the pull request with `documentation` or `workflow` and the version checks will be skipped.
+
 <!-- start usage -->
 ```yaml
 - name: Checkout main
@@ -43,12 +45,13 @@ you can access this in your workflow with `$ {{ env.release_tag }}`
   # Don't run on main otherwise it will compare main with main
   if: ${{ github.ref != 'refs/heads/main' }} 
   id: version_comparison
-  uses: khalford/check-version-action@main
+  uses: stfc/check-version-action@main
   with:
     # Path to version file from project root
     app_version_path: "version.txt"
     # Optional: To check if compose image version matches application version
     docker_compose_path: "docker-compose.yaml"
+    labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
     
 - name: Log App Success
   if: ${{ env.app_updated == 'true' }}
