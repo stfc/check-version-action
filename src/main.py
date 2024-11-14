@@ -23,7 +23,9 @@ def main():
         CompareAppVersion().run(main_path / app_path, branch_path / app_path)
         if compose_path:
             compose_path = Path(compose_path)
-            CompareComposeVersion().run(branch_path / app_path, branch_path / compose_path)
+            CompareComposeVersion().run(
+                branch_path / app_path, branch_path / compose_path
+            )
 
         github_env = os.getenv("GITHUB_ENV")
         with open(github_env, "a", encoding="utf-8") as env:
