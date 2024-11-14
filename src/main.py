@@ -18,18 +18,20 @@ def main():
     with open(branch_path / app_path, "r", encoding="utf-8") as release_file:
         release_version = release_file.read().strip("\n")
 
-    CompareAppVersion().run(main_path / app_path, branch_path / app_path)
-    if compose_path:
-        compose_path = Path(compose_path)
-        CompareComposeVersion().run(branch_path / app_path, branch_path / compose_path)
-
-    github_env = os.getenv("GITHUB_ENV")
-    with open(github_env, "a", encoding="utf-8") as env:
-        # We can assume either/both of these values returned true otherwise they would have errored
-        env.write("app_updated=true\n")
+    labels = os.environ.get("INPUT_LABELS")
+    if not any(label in labels for label in ["documentation", "workflow"]):
+        CompareAppVersion().run(main_path / app_path, branch_path / app_path)
         if compose_path:
-            env.write("compose_updated=true")
-        env.write(f"release_tag={release_version}")
+            compose_path = Path(compose_path)
+            CompareComposeVersion().run(branch_path / app_path, branch_path / compose_path)
+
+        github_env = os.getenv("GITHUB_ENV")
+        with open(github_env, "a", encoding="utf-8") as env:
+            # We can assume either/both of these values returned true otherwise they would have errored
+            env.write("app_updated=true\n")
+            if compose_path:
+                env.write("compose_updated=true")
+            env.write(f"release_tag={release_version}")
 
 
 if __name__ == "__main__":

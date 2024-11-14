@@ -8,6 +8,9 @@ inputs:
   docker_compose_path:
     description: 'Path to compose file.'
     required: false
+  labels:
+    description: 'Labels added to pull requests.'
+    required: True
 outputs:
   app_updated:
     description: 'If the app version was updated or not.'
