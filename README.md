@@ -1,5 +1,5 @@
 # Check Version
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stfc/check-version-action/self_test.yaml?label=Intergration%20Test)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stfc/check-version-action/self_test.yaml?label=Integration%20Test)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stfc/check-version-action/lint.yaml?label=Linting)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stfc/check-version-action/test.yaml?label=Tests)
 [![codecov](https://codecov.io/gh/stfc/check-version-action/graph/badge.svg?token=OD2Z90ST8R)](https://codecov.io/gh/stfc/check-version-action)
