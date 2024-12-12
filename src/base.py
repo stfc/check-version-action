@@ -13,13 +13,8 @@ class Base(ABC):
     """The base abstract class to build features on."""
 
     @abstractmethod
-    def run(self, path1: Path, target_version: semver) -> bool:
+    def run(self, path1: Path, old_semver, target_version: semver) -> bool:
         """
         This method is the entry point to the feature.
         It should take a file path to retrieve a version from and the new Semantic Version and return the comparison result.
         """
-
-    @staticmethod
-    @abstractmethod
-    def read_files(path1: Path) -> str:
-        """This method should read the contents of the compared files and return the strings"""
