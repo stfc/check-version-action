@@ -5,9 +5,9 @@
 [![codecov](https://codecov.io/gh/stfc/check-version-action/graph/badge.svg?token=OD2Z90ST8R)](https://codecov.io/gh/stfc/check-version-action)
 
 
-This action compares the application version number from your working branch to the main branch.
+This action compares the app version number from your working branch to the main branch.
 
-You can also check that the **first** image version that appears in your `docker-compose.yaml` file will match the application version
+You can also check that the **first** image version that appears in your `docker-compose.yaml` file matches the app version
 
 The comparison follows the PEP 440 Version Identification and Dependency Specification.
 
@@ -42,27 +42,16 @@ If you are making a change which should not affect the version such as README or
     path: 'branch'
     
 - name: Compare versions
-  # Don't run on main otherwise it will compare main with main
+  # Don't run on main otherwise it compares main with main
   if: ${{ github.ref != 'refs/heads/main' }} 
   id: version_comparison
   uses: stfc/check-version-action@main
   with:
     # Path to version file from project root
     app_version_path: "version.txt"
-    # Optional: To check if compose image version matches application version
+    # Optional: to check if Docker compose image version matches app version
     docker_compose_path: "docker-compose.yaml"
     labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
-    
-- name: Log App Success
-  if: ${{ env.app_updated == 'true' }}
-  run: |
-    echo "App version has been updated correctly!"
-
-# Optional: If using the docker compose check
-- name: Log Compose Success
-  if: ${{ env.compose_updated == 'true' }}
-  run: |
-    echo "Compose version has been updated correctly!"
 ```
 <!-- end usage -->
 
