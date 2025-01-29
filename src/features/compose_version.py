@@ -1,7 +1,7 @@
 """Compare Docker compose image version to the version.txt."""
 
 from pathlib import Path
-from typing import List, Union, Type
+from typing import List
 
 from packaging.version import Version
 
@@ -20,7 +20,7 @@ class CompareComposeVersion:
         app_ver = Version(app_content)
         compose_ver = self.get_version(compose_content)
         comparison = self.compare(app_ver, compose_ver)
-        if comparison == RuntimeError:
+        if not comparison:
             raise RuntimeError(
                 f"The version in {('/'.join(str(compose).split('/')[4:]))[0:]}"
                 f" does not match {('/'.join(str(app).split('/')[4:]))[0:]}."
@@ -57,13 +57,11 @@ class CompareComposeVersion:
         return Version(version_str)
 
     @staticmethod
-    def compare(app: Version, compose: Version) -> Union[bool, Type[RuntimeError]]:
+    def compare(app: Version, compose: Version) -> bool:
         """
         Returns if the app version and docker compose version are equal.
         :param app: App version
         :param compose: Compose version
         :return: If the version update is correct return true, else return error
         """
-        if app == compose:
-            return True
-        return RuntimeError
+        return app == compose

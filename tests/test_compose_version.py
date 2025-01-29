@@ -57,10 +57,10 @@ def test_get_version(instance):
 def test_compare_pass(instance):
     """Test that the compare returns true for a valid features.compose_version"""
     res = instance.compare(Version("1.0.0"), Version("1.0.0"))
-    assert res != RuntimeError
+    assert res
 
 
 def test_compare_fails(instance):
     """Test that the compare returns an error for an invalid features.compose_version"""
     res = instance.compare(Version("1.0.1"), Version("1.0.0"))
-    assert res == RuntimeError
+    assert not res

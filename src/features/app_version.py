@@ -20,7 +20,7 @@ class CompareAppVersion:
         main_ver = self.get_version(main_content)
         branch_ver = self.get_version(branch_content)
         comparison = self.compare(main_ver, branch_ver)
-        if comparison == RuntimeError:
+        if not comparison:
             raise RuntimeError(
                 f"The version in {('/'.join(str(path2).split('/')[4:]))[0:]} has not been updated correctly."
             )
@@ -51,13 +51,11 @@ class CompareAppVersion:
         return Version(content)
 
     @staticmethod
-    def compare(main: Version, branch: Version) -> Union[bool, Type[RuntimeError]]:
+    def compare(main: Version, branch: Version) -> bool:
         """
         Returns if the branch version is larger than the main version
         :param main: Version on main
         :param branch: Version on branch
         :return: If the version update is correct return true, else return error
         """
-        if branch > main:
-            return True
-        return RuntimeError
+        return branch > main
