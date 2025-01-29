@@ -23,7 +23,7 @@ class CompareComposeVersion:
         if comparison == RuntimeError:
             raise RuntimeError(
                 f"The version in {('/'.join(str(compose).split('/')[4:]))[0:]}"
-                f"does not match {('/'.join(str(app).split('/')[4:]))[0:]}."
+                f" does not match {('/'.join(str(app).split('/')[4:]))[0:]}."
             )
         return True
 
