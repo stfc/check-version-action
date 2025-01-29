@@ -1,4 +1,4 @@
-"""Tests for main"""
+"""Tests for main.py"""
 
 from unittest.mock import patch, mock_open
 from pathlib import Path

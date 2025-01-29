@@ -1,3 +1,5 @@
+"""Compare app version.txt on main to the branch."""
+
 from pathlib import Path
 from typing import Union, Type
 
