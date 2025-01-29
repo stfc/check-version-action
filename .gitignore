@@ -1,6 +1,7 @@
 .idea
-main_version
-branch_version
 src/__pycache__/*
 src/features/__pycache__/*
 tests/__pycache__/*
+.coverage
+.coveragerc
+coverage.xml
