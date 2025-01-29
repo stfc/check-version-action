@@ -1,10 +1,10 @@
-"""Tests for comparison.CompareComposeVersion"""
+"""Tests for features/compose_version.py"""
 
 from unittest.mock import patch, mock_open
 from pathlib import Path
 import pytest
 from packaging.version import Version
-from comparison import CompareComposeVersion, VersionNotUpdated
+from features.compose_version import CompareComposeVersion
 
 
 @pytest.fixture(name="instance", scope="function")
@@ -13,9 +13,9 @@ def instance_fixture():
     return CompareComposeVersion()
 
 
-@patch("comparison.CompareComposeVersion.compare")
-@patch("comparison.CompareComposeVersion.get_version")
-@patch("comparison.CompareComposeVersion.read_files")
+@patch("features.compose_version.CompareComposeVersion.compare")
+@patch("features.compose_version.CompareComposeVersion.get_version")
+@patch("features.compose_version.CompareComposeVersion.read_files")
 def test_run(mock_read, mock_get_version, mock_compare, instance):
     """Test the run method makes correct calls."""
     mock_path1 = Path("mock1")
@@ -30,14 +30,14 @@ def test_run(mock_read, mock_get_version, mock_compare, instance):
     assert res
 
 
-@patch("comparison.CompareComposeVersion.compare")
-@patch("comparison.CompareComposeVersion.get_version")
-@patch("comparison.CompareComposeVersion.read_files")
+@patch("features.compose_version.CompareComposeVersion.compare")
+@patch("features.compose_version.CompareComposeVersion.get_version")
+@patch("features.compose_version.CompareComposeVersion.read_files")
 def test_run_fails(mock_read, _, mock_compare, instance):
     """Test the run method fails."""
     mock_read.return_value = ("1.0.0", "1.0.1")
-    mock_compare.side_effect = VersionNotUpdated()
-    with pytest.raises(VersionNotUpdated):
+    mock_compare.side_effect = RuntimeError()
+    with pytest.raises(RuntimeError):
         instance.run(Path("mock1"), Path("mock2"))
 
 
@@ -55,12 +55,12 @@ def test_get_version(instance):
 
 
 def test_compare_pass(instance):
-    """Test that the compare returns true for a valid comparison"""
+    """Test that the compare returns true for a valid features.compose_version"""
     res = instance.compare(Version("1.0.0"), Version("1.0.0"))
-    assert res != VersionNotUpdated
+    assert res != RuntimeError
 
 
 def test_compare_fails(instance):
-    """Test that the compare returns an error for an invalid comparison"""
+    """Test that the compare returns an error for an invalid features.compose_version"""
     res = instance.compare(Version("1.0.1"), Version("1.0.0"))
-    assert res == VersionNotUpdated
+    assert res == RuntimeError

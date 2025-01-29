@@ -2,7 +2,8 @@
 
 import os
 from pathlib import Path
-from comparison import CompareAppVersion, CompareComposeVersion
+from src.features.compose_version import CompareComposeVersion
+from src.features.app_version import CompareAppVersion
 
 
 def main() -> bool:

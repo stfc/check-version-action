@@ -1,10 +1,10 @@
-"""Tests for comparison.CompareAppVersion"""
+"""Tests for features.app_version.CompareAppVersion"""
 
 from unittest.mock import patch, mock_open
 from pathlib import Path
 from packaging.version import Version
 import pytest
-from comparison import CompareAppVersion, VersionNotUpdated
+from features.app_version import CompareAppVersion
 
 
 @pytest.fixture(name="instance", scope="function")
@@ -13,9 +13,9 @@ def instance_fixture():
     return CompareAppVersion()
 
 
-@patch("comparison.CompareAppVersion.compare")
-@patch("comparison.CompareAppVersion.get_version")
-@patch("comparison.CompareAppVersion.read_files")
+@patch("features.app_version.CompareAppVersion.compare")
+@patch("features.app_version.CompareAppVersion.get_version")
+@patch("features.app_version.CompareAppVersion.read_files")
 def test_run(mock_read, mock_get_version, mock_compare, instance):
     """Test the run method makes correct calls."""
     mock_path1 = Path("mock1")
@@ -31,14 +31,14 @@ def test_run(mock_read, mock_get_version, mock_compare, instance):
     assert res
 
 
-@patch("comparison.CompareAppVersion.compare")
-@patch("comparison.CompareAppVersion.get_version")
-@patch("comparison.CompareAppVersion.read_files")
+@patch("features.app_version.CompareAppVersion.compare")
+@patch("features.app_version.CompareAppVersion.get_version")
+@patch("features.app_version.CompareAppVersion.read_files")
 def test_run_fails(mock_read, _, mock_compare, instance):
     """Test the run method fails."""
     mock_read.return_value = ("mock1", "mock2")
-    mock_compare.side_effect = VersionNotUpdated()
-    with pytest.raises(VersionNotUpdated):
+    mock_compare.side_effect = RuntimeError()
+    with pytest.raises(RuntimeError):
         instance.run(Path("mock1"), Path("mock2"))
 
 
@@ -56,12 +56,12 @@ def test_get_version(instance):
 
 
 def test_compare_pass(instance):
-    """Test that the compare returns true for a valid comparison"""
+    """Test that the compare returns true for a valid features.app_version"""
     res = instance.compare(Version("1.0.0"), Version("1.0.1"))
-    assert res != VersionNotUpdated
+    assert res != RuntimeError
 
 
 def test_compare_fails(instance):
-    """Test that the compare returns an error for an invalid comparison"""
+    """Test that the compare returns an error for an invalid features.app_version"""
     res = instance.compare(Version("1.0.1"), Version("1.0.0"))
-    assert res == VersionNotUpdated
+    assert res == RuntimeError
