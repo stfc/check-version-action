@@ -1,4 +1,4 @@
-"""Tests for main"""
+"""Tests for main.py"""
 
 from unittest.mock import patch, mock_open
 from pathlib import Path
@@ -11,10 +11,10 @@ from main import main
 def test_main(mock_os, mock_compare_app, mock_compare_compose):
     """Test the main method runs correctly."""
     mock_os.environ.get.side_effect = [
+        ["some_label"],
         Path("app"),
         Path("compose"),
         Path("workspace"),
-        [],
     ]
 
     with patch("builtins.open", mock_open(read_data="1.0.0")):
@@ -38,10 +38,10 @@ def test_main(mock_os, mock_compare_app, mock_compare_compose):
 def test_main_skip(mock_os):
     """Test the main method skips the comparison methods."""
     mock_os.environ.get.side_effect = [
+        ["workflow", "documentation"],
         Path("app"),
         Path("compose"),
         Path("workspace"),
-        ["workflow", "documentation"],
     ]
     with patch("builtins.open", mock_open(read_data="1.0.0")):
         res = main()

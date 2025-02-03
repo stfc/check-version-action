@@ -22,13 +22,3 @@ jobs:
           app_version_path: "version.txt"
           docker_compose_path: "docker-compose.yml"
           labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
-
-      - name: Log Success
-        if: ${{ env.app_updated == 'true' }}
-        run: |
-          echo "App version has been updated correctly!"
-
-      - name: Log Success
-        if: ${{ env.compose_updated == 'true' }}
-        run: |
-          echo "Compose version has been updated correctly!"
