@@ -23,9 +23,6 @@ More detailed information about the versions can be found [here](https://packagi
 As of October 2024 GitHub actions using Docker Containers can only be run on GitHub runners using a Linux operating system.<br>
 Read here for details: [Link to GitHub docs](https://docs.github.com/en/actions/sharing-automations/creating-actions/about-custom-actions#types-of-actions)
 
-The release tag is extracted and stored in `$GITHUB_ENV`,
-you can access this in your workflow with `$ {{ env.release_tag }}` 
-
 If you are making a change which should not affect the version such as README or CI changes. You can label the pull request with `documentation` or `workflow` and the version checks will be skipped.
 
 <!-- start usage -->
@@ -50,11 +47,11 @@ If you are making a change which should not affect the version such as README or
   id: version_comparison
   uses: stfc/check-version-action@main
   with:
+    labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
     # Path to version file from project root
     app_version_path: "version.txt"
     # Optional: to check if Docker compose image version matches app version
     docker_compose_path: "docker-compose.yaml"
-    labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
 ```
 <!-- end usage -->
 
