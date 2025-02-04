@@ -6,6 +6,9 @@
 
 
 This action compares the app version number from your working branch to the main branch.
+The pull request must have one of the below labels matching the version change.<br>
+
+`major | minor | bug | patch`
 
 You can also check that the **first** image version that appears in your `docker-compose.yaml` file matches the app version
 
