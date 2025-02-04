@@ -12,7 +12,8 @@ def main() -> bool:
     Here we get environment variables then set environment variables when finished.
     """
     # Check if the action should skip version checks
-    for label in os.environ.get("INPUT_LABELS"):
+    labels = os.environ.get("INPUT_LABELS")
+    for label in labels:
         if label in ["documentation", "workflow"]:
             return False
 
@@ -24,7 +25,7 @@ def main() -> bool:
     branch_path = root_path / "branch"
 
     # Action must compare the app version as the minimum feature.
-    CompareAppVersion().run(main_path / app_path, branch_path / app_path)
+    CompareAppVersion().run(main_path / app_path, branch_path / app_path, labels)
 
     # Compare the Docker compose file version if given
     if compose_path:
