@@ -26,7 +26,7 @@ def test_main(mock_os, mock_compare_app, mock_compare_compose):
     mock_branch_path = Path("workspace") / "branch"
     mock_main_path = Path("workspace") / "main"
     mock_compare_app.return_value.run.assert_called_once_with(
-        mock_main_path / "app", mock_branch_path / "app"
+        mock_main_path / "app", mock_branch_path / "app", ["some_label"]
     )
     mock_compare_compose.return_value.run.assert_called_once_with(
         mock_branch_path / "app", mock_branch_path / "compose"
