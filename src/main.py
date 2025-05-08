@@ -7,7 +7,7 @@ from features.compose_version import CompareComposeVersion
 from features.app_version import CompareAppVersion
 
 
-def main() -> bool:
+def main():
     """
     The entry point function for the action.
     Here we get environment variables then set environment variables when finished.
@@ -17,7 +17,7 @@ def main() -> bool:
     labels = json.loads(json_labels)
     for label in labels:
         if label in ["documentation", "workflow"]:
-            return True
+            return
 
     # Collect various paths from the environment
     app_path = Path(os.environ.get("INPUT_APP_VERSION_PATH"))
@@ -39,8 +39,6 @@ def main() -> bool:
         # If Docker compose path was provided we can assume it returned true otherwise there would be an error.
         if compose_path:
             env.write("compose_updated=true")
-
-    return True
 
 
 if __name__ == "__main__":
