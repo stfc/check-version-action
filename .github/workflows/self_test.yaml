@@ -21,7 +21,7 @@ jobs:
       - name: Self test
         if: ${{ github.ref != 'refs/heads/main' }}
         id: selftest
-        uses: stfc/check-version-action@main
+        uses: stfc/check-version-action@test_workflow_skip
         with:
           app_version_path: "version.txt"
           docker_compose_path: "docker-compose.yml"
