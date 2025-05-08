@@ -1,6 +1,7 @@
 """This module is the entry point for the Action."""
 
 import os
+import json
 from pathlib import Path
 from features.compose_version import CompareComposeVersion
 from features.app_version import CompareAppVersion
@@ -12,10 +13,11 @@ def main() -> bool:
     Here we get environment variables then set environment variables when finished.
     """
     # Check if the action should skip version checks
-    labels = os.environ.get("INPUT_LABELS")
+    json_labels = os.environ.get("INPUT_LABELS")
+    labels = json.loads(json_labels)
     for label in labels:
         if label in ["documentation", "workflow"]:
-            return False
+            return True
 
     # Collect various paths from the environment
     app_path = Path(os.environ.get("INPUT_APP_VERSION_PATH"))
