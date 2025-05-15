@@ -1,0 +1,4 @@
+packaging
+pylint
+pytest
+pytest-cov
