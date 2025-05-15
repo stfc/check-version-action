@@ -13,50 +13,39 @@ def instance_fixture():
     return CompareAppVersion()
 
 
-@patch("features.app_version.CompareAppVersion.check_label")
-@patch("features.app_version.CompareAppVersion.compare")
 @patch("features.app_version.CompareAppVersion.get_version")
 @patch("features.app_version.CompareAppVersion.read_files")
-def test_run(mock_read, mock_get_version, mock_compare, mock_check_label, instance):
+def test_run(mock_read, mock_get_version, instance):
     """Test the run method makes correct calls."""
     mock_path1 = Path("mock1")
     mock_path2 = Path("mock2")
     mock_read.return_value = ("1.0.0", "1.0.1")
-    mock_get_version.side_effect = [Version("1.0.0"), Version("1.0.0")]
-    mock_compare.return_value = True
-    res = instance.run(mock_path1, mock_path2, ["mock_label"])
+    mock_get_version.side_effect = [Version("1.0.0"), Version("1.0.1")]
+    res = instance.run(mock_path1, mock_path2, ["patch"])
     mock_read.assert_called_once_with(mock_path1, mock_path2)
     mock_get_version.assert_any_call("1.0.0")
     mock_get_version.assert_any_call("1.0.1")
-    mock_compare.assert_called_once_with(Version("1.0.0"), Version("1.0.0"))
-    mock_check_label.assert_called_once_with(
-        ["mock_label"], Version("1.0.0"), Version("1.0.0")
-    )
     assert res
 
 
-@patch("features.app_version.CompareAppVersion.compare")
 @patch("features.app_version.CompareAppVersion.get_version")
 @patch("features.app_version.CompareAppVersion.read_files")
-def test_run_fails_comparison(mock_read, _, mock_compare, instance):
+def test_run_fails_comparison(mock_read, mock_get_version, instance):
     """Test the run method fails on the comparison check."""
-    mock_read.return_value = ("mock1", "mock2")
-    mock_compare.return_value = False
+    mock_read.return_value = ("1.0.0", "0.1.0")
+    mock_get_version.side_effect = [Version("1.0.0"), Version("0.1.0")]
     with pytest.raises(RuntimeError):
-        instance.run(Path("mock1"), Path("mock2"), [])
+        instance.run(Path("mock1"), Path("mock2"), ["patch"])
 
 
-@patch("features.app_version.CompareAppVersion.check_label")
-@patch("features.app_version.CompareAppVersion.compare")
 @patch("features.app_version.CompareAppVersion.get_version")
 @patch("features.app_version.CompareAppVersion.read_files")
-def test_run_fails_check_label(mock_read, _, mock_compare, mock_check_label, instance):
-    """Test the run method fails on the label check."""
-    mock_read.return_value = ("mock1", "mock2")
-    mock_check_label.return_value = False
-    mock_compare.return_value = True
+def test_run_fails_check_label(mock_read, mock_get_version, instance):
+    """Test the run method fails on the comparison check."""
+    mock_read.return_value = ("1.0.0", "1.1.1")
+    mock_get_version.side_effect = [Version("1.0.0"), Version("1.1.1")]
     with pytest.raises(RuntimeError):
-        instance.run(Path("mock1"), Path("mock2"), [])
+        instance.run(Path("mock1"), Path("mock2"), ["minor"])
 
 
 def test_read_files(instance):
@@ -86,19 +75,37 @@ def test_compare_fails(instance):
 
 def test_check_label(instance):
     """Test that the check passes for a correct version change"""
-    assert instance.check_label(["major"], Version("1.0.0"), Version("2.0.0"))
+    res = instance.check_label(["major"], Version("1.0.0"), Version("2.0.0"))
+    assert res == ""
 
 
 def test_check_label_fails_major(instance):
-    """Test the function returns false when a major change is made but not labeled."""
-    assert not instance.check_label(["minor"], Version("1.0.0"), Version("2.0.0"))
+    """Test the function returns the correct error messages for major changes."""
+    res = instance.check_label(["major"], Version("1.0.0"), Version("2.0.1"))
+    assert res == "When making a major version change, micro version should be 0.\n"
+    res2 = instance.check_label(["major"], Version("1.0.0"), Version("2.1.0"))
+    assert res2 == "When making a major version change, minor version should be 0.\n"
 
 
 def test_check_label_fails_minor(instance):
-    """Test the function returns false when a minor change is made but not labeled."""
-    assert not instance.check_label(["major"], Version("1.0.0"), Version("1.1.0"))
+    """Test the function returns the correct error messages for minor changes."""
+    res = instance.check_label(["minor"], Version("1.0.0"), Version("1.1.1"))
+    assert res == "When making a minor version change, micro version should be 0.\n"
+    res2 = instance.check_label(["minor"], Version("1.0.0"), Version("2.1.0"))
+    assert (
+        res2
+        == "When making a minor version change, major version should be the same.\n"
+    )
 
 
 def test_check_label_fails_micro(instance):
-    """Test the function returns false when a micro change is made but not labeled."""
-    assert not instance.check_label(["minor"], Version("1.0.0"), Version("1.0.1"))
+    """Test the function returns the correct error messages for micro changes."""
+    res = instance.check_label(["patch"], Version("1.0.0"), Version("1.1.1"))
+    assert (
+        res == "When making a micro version change, minor version should be the same.\n"
+    )
+    res2 = instance.check_label(["bug"], Version("1.0.0"), Version("2.0.1"))
+    assert (
+        res2
+        == "When making a micro version change, major version should be the same.\n"
+    )
