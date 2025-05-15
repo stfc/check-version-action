@@ -18,6 +18,18 @@ def main():
     for label in labels:
         if label in ["documentation", "workflow"]:
             return
+    accepted_labels = ["major", "minor", "bug", "patch"]
+    matching_labels = [label for label in labels if label in accepted_labels]
+    if len(matching_labels) > 1:
+        raise RuntimeError(
+            f"You can only have one of the following labels: major, minor, bug, patch.\n"
+            f"You have provided the following labels: {matching_labels}\n"
+        )
+    if len(matching_labels) == 0:
+        raise RuntimeError(
+            f"You must provide at least one of the following labels: major, minor, bug, patch.\n"
+            f"You have provided the following labels: {labels}\n"
+        )
 
     # Collect various paths from the environment
     app_path = Path(os.environ.get("INPUT_APP_VERSION_PATH"))
