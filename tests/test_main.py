@@ -2,6 +2,7 @@
 
 from unittest.mock import patch, mock_open
 from pathlib import Path
+import pytest
 from main import main
 
 
@@ -11,7 +12,7 @@ from main import main
 def test_main(mock_os, mock_compare_app, mock_compare_compose):
     """Test the main method runs correctly."""
     mock_os.environ.get.side_effect = [
-        '["some_label"]',
+        '["patch"]',
         Path("app"),
         Path("compose"),
         Path("workspace"),
@@ -26,7 +27,7 @@ def test_main(mock_os, mock_compare_app, mock_compare_compose):
     mock_branch_path = Path("workspace") / "branch"
     mock_main_path = Path("workspace") / "main"
     mock_compare_app.return_value.run.assert_called_once_with(
-        mock_main_path / "app", mock_branch_path / "app", ["some_label"]
+        mock_main_path / "app", mock_branch_path / "app", ["patch"]
     )
     mock_compare_compose.return_value.run.assert_called_once_with(
         mock_branch_path / "app", mock_branch_path / "compose"
@@ -44,3 +45,31 @@ def test_main_skip(mock_os):
     ]
     with patch("builtins.open", mock_open(read_data="1.0.0")):
         main()
+
+
+@patch("main.os")
+def test_main_too_many_labels(mock_os):
+    """Test the main method skips the comparison methods."""
+    mock_os.environ.get.side_effect = [
+        '["patch", "minor"]',
+        Path("app"),
+        Path("compose"),
+        Path("workspace"),
+    ]
+    with patch("builtins.open", mock_open(read_data="1.0.0")):
+        with pytest.raises(RuntimeError):
+            main()
+
+
+@patch("main.os")
+def test_main_too_little_labels(mock_os):
+    """Test the main method skips the comparison methods."""
+    mock_os.environ.get.side_effect = [
+        '["useless_label"]',
+        Path("app"),
+        Path("compose"),
+        Path("workspace"),
+    ]
+    with patch("builtins.open", mock_open(read_data="1.0.0")):
+        with pytest.raises(RuntimeError):
+            main()
