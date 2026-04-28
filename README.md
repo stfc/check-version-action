@@ -5,12 +5,15 @@
 [![codecov](https://codecov.io/gh/stfc/check-version-action/graph/badge.svg?token=OD2Z90ST8R)](https://codecov.io/gh/stfc/check-version-action)
 
 
-This action compares the app version number from your working branch to the main branch.
-The pull request must have one of the below labels matching the version change.<br>
+If you have a software project that uses a **version.txt** file then you can use this action to make sure the version is updated when pull requests are made.
+
+This action will compare the **version.txt** file on the feature branch to the main branch.
+
+Projects using this action in their CI must use one of the below labels matching the version change.
 
 `major | minor | bug | patch`
 
-You can also check that the **first** image version that appears in your `docker-compose.yaml` file matches the app version
+If you project has a **docker-compose.yaml** file, you can also check that the **first** image version matches the **version.txt**
 
 The comparison follows the PEP 440 Version Identification and Dependency Specification.
 
